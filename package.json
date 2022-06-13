@@ -1,0 +1,28 @@
+{
+  "name": "webcomponents-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexBlacksmith/webcomponents-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexBlacksmith/webcomponents-test/issues"
+  },
+  "homepage": "https://github.com/AlexBlacksmith/webcomponents-test#readme",
+  "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.2.0",
+    "nodemon": "^2.0.16"
+  }
+}

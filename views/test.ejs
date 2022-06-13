@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    main {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    user-card {
+        flex-basis: 25%;
+    }
+</style>
+<body>
+    <template id="userSlots">
+        <span slot="id"></span>
+        <span slot="username"></span>
+        <span slot="email"></span>
+    </template>
+
+    <template id="userCardTemplate">
+        <style>
+            user-card {
+                flex-basis: 25%;
+            }
+        </style>
+        <h1 data-username><slot name="username"></slot></h1>
+        <p data-email><slot name="email"></slot></p>
+        <button>show Id</button>
+    </template>   
+
+    <main>
+        <% data.forEach(user => { %>
+            <user-card data-id>
+                <span slot="id"><%=user.id%>></span>
+                <span slot="username"><%=user.username%></span>
+                <span slot="email"><%=user.email%></span>
+            </user-card> 
+         <% }); %>
+    </main>
+    <button id="newUser">Add a user</button>
+</body>
+
+<script>
+    const newUserbutton = document.querySelector('#newUser');
+    const main = document.querySelector('main');
+    const userCardTemplate = document.querySelector('#userCardTemplate');
+    const slots = document.querySelector('#userSlots');
+
+    const UserCard = class extends HTMLElement {
+        constructor(id, username, email) {
+            super();
+            this.appendChild(slots.content.cloneNode(true));
+            this.id = id || this.querySelector('[slot="id"]').textContent;
+            this.username = username || this.querySelector('[slot="username"]').textContent;
+            this.email = email || this.querySelector('[slot="email"]').textContent;
+            this.setAttribute('data-id', this.id);
+        }
+        connectedCallback() {
+            const shadowRoot = this.attachShadow({mode: 'open'});
+            shadowRoot.appendChild(userCardTemplate.content.cloneNode(true));
+            const btn = shadowRoot.querySelector('button');
+            
+            btn.addEventListener('click', (e) => {
+                alert(this.id);
+            });      
+        }
+    }
+    customElements.define('user-card', UserCard);
+
+    function addUserCard(data) {
+        const userCard = new UserCard(data.id, data.username, data.email);
+        console.log(userCard);
+        
+        userCard
+            .querySelector('[slot="username"]')
+            .textContent = userCard.username;
+        
+        userCard
+            .querySelector('[slot="email"]')
+            .textContent = userCard.email;
+
+        main.append(userCard);
+    }
+
+    newUserbutton.addEventListener('click', e => {
+            fetch('/new-user', {
+                method: 'GET'
+            })
+            .then(res => res.json())
+            .then(addUserCard)
+            .catch(err => console.log(err));
+        });
+</script>
+
+</html>
